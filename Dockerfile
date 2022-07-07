@@ -11,4 +11,4 @@ WORKDIR ${APPDIR}
 COPY --chown=${PROOV_ICS_UID}:${PROOV_ICS_GID} requirements.txt ${APPDIR}
 RUN pip3 install --no-cache-dir -r requirements.txt
 COPY --chown=${PROOV_ICS_UID}:${PROOV_ICS_GID} . ${APPDIR}
-ENTRYPOINT ["gunicorn", "--config", "gunicorn_config.py", "app.ics:app"]
+ENTRYPOINT ["gunicorn", "--config", "gunicorn_config.py", "app.__init__:app"]
