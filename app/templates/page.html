@@ -11,8 +11,8 @@
 	</form>
 {% endif %}
 
-{% if bearer|length %}
-	Bearer: {{bearer}}
+{% if emailCredential|length %}
+	emailCredential: {{emailCredential}}
 	<br>
 {% else %}
 	Click below button to get sent an Email Confirmation Code and enter below.
@@ -24,14 +24,16 @@
 	</form>
 {% endif %}
 
-{% if bookedData|length %}
+{% if bookingData|length %}
 <br>
-Content in <a href="/{{emailurl}}/{{bearer}}/proovr.ics">ICS link</a> shown below:<br>
-        {% for entry in bookedData %}
+Content in <a href="/{{emailurl}}/{{emailCredential}}/proovr.ics">ICS link</a> shown below:<br>
+        {% for entry in bookingData %}
 	<blockquote>
 	{{ entry['date'] }}<br>
-	{{ entry['booking']['company']['name'] }}<br>
-	{{ entry['booking']['deskArea']['name'] }} ({{entry['booking']['deskArea']['deskCount']- entry['seatsAvailable']}} booked)<br>
+	{% if entry['booking'] %}
+		{{ entry['booking']['company']['name'] }}<br>
+		{{ entry['booking']['deskArea']['name'] }} ({{entry['booking']['deskArea']['deskCount']- entry['seatsAvailable']}} booked)<br>
+	{% endif %}
 	</blockquote>
         {% endfor %}
 {% endif %}

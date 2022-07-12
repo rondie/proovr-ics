@@ -1,4 +1,5 @@
 import json
+import re
 import uuid
 
 from ics import Calendar, Event
@@ -24,15 +25,30 @@ def mailConfCode(email):
             )
 
 
-def getBookedData(email, bearer):
-    headers["Authorization"] = "Bearer " + bearer
+def getJwt(emailCredential):
+    getJwtData = {"Credentials": {"Email": emailCredential}}
+    getJwtPage = requests.post(
+        'https://proovr.proxyclick.com/employee/view-booking',
+        headers=headers,
+        json=getJwtData
+        )
+    redirectUrlJson = json.loads(getJwtPage.text)
+    redirectUrlMatch = re.search(
+        'jwt=([a-z].*)&',
+        str(redirectUrlJson)
+        )
+    jwt = redirectUrlMatch.group(1)
+    return getJwtPage.status_code, getJwtPage.text, jwt
+
+
+def getBookedData(jwt):
+    headers["Authorization"] = "Bearer " + jwt
     bookingPage = requests.get(
         site + '/api/app/' + bhid + '/em/bookable-days',
         headers=headers
         )
     bookingData = json.loads(bookingPage.text)
-    bookedData = [i for i in bookingData if (i['booking'])]
-    return(bookedData)
+    return(bookingData)
 
 
 def makeIcs(bookedData):

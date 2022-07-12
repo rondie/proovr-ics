@@ -1,10 +1,9 @@
 import json
-import re
 import urllib.parse
 import uuid
 from io import BytesIO
 
-from app.actions import getBookedData, mailConfCode, makeIcs
+from app.functions import getBookedData, mailConfCode, makeIcs, getJwt
 
 from flask import Flask, redirect, render_template, request, send_file
 
@@ -61,19 +60,18 @@ def getconfcode(emailurl):
             else:
                 emailCredentialPageJson = json.loads(emailCredentialPage.text)
                 emailCredential = emailCredentialPageJson['emailCredential']
-                getBearerData = {"Credentials": {"Email": emailCredential}}
-                getBearerPage = requests.post(
-                    'https://proovr.proxyclick.com/employee/view-booking',
-                    headers=headers,
-                    json=getBearerData
-                    )
-                redirectUrlJson = json.loads(getBearerPage.text)
-                redirectUrlMatch = re.search(
-                    'jwt=([a-z].*)&',
-                    str(redirectUrlJson)
-                    )
-                bearer = redirectUrlMatch.group(1)
-                return redirect(emailurl + '/' + bearer)
+                status_code, error, jwt = getJwt(emailCredential)
+                if status_code == 200:
+                    return redirect(
+                        emailurl + '/' + emailCredential
+                        )
+                else:
+                    return render_template(
+                        "page.html",
+                        email=email,
+                        emailurl=emailurl,
+                        error=error
+                        )
         else:
             mailConfCode(email)
             return render_template(
@@ -82,26 +80,45 @@ def getconfcode(emailurl):
                 emailurl=emailurl)
 
 
-@app.route('/<emailurl>/<bearer>')
-def icsPage(emailurl, bearer):
+@app.route('/<emailurl>/<emailCredential>')
+def icsPage(emailurl, emailCredential):
     email = urllib.parse.unquote(emailurl)
-    bookedData = getBookedData(email, bearer)
-    return render_template(
-        "page.html",
-        email=email,
-        emailurl=emailurl,
-        bearer=bearer,
-        bookedData=bookedData
-        )
+    status_code, error, jwt = getJwt(emailCredential)
+    if status_code == 200:
+        bookingData = getBookedData(jwt)
+        return render_template(
+            "page.html",
+            email=email,
+            emailurl=emailurl,
+            emailCredential=emailCredential,
+            bookingData=bookingData
+            )
+    else:
+        return render_template(
+            "page.html",
+            email=email,
+            emailurl=emailurl,
+            error=error
+            )
 
 
-@app.route('/<emailurl>/<bearer>/proovr.ics')
-def ics(emailurl, bearer):
+@app.route('/<emailurl>/<emailCredential>/proovr.ics')
+def ics(emailurl, emailCredential):
     email = urllib.parse.unquote(emailurl)
-    bookedData = getBookedData(email, bearer)
-    file = BytesIO(makeIcs(bookedData))
-    return send_file(
-        file,
-        attachment_filename='proovr.ics',
-        as_attachment=True)
-    file.close
+    status_code, error, jwt = getJwt(emailCredential)
+    if status_code == 200:
+        bookingData = getBookedData(jwt)
+        bookedData = [i for i in bookingData if (i['booking'])]
+        file = BytesIO(makeIcs(bookedData))
+        return send_file(
+            file,
+            attachment_filename='proovr.ics',
+            as_attachment=True)
+        file.close
+    else:
+        return render_template(
+            "page.html",
+            email=email,
+            emailurl=emailurl,
+            error=error
+            ), 500
