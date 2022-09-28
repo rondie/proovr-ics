@@ -112,7 +112,7 @@ def ics(emailurl, emailCredential):
         file = BytesIO(makeIcs(bookedData))
         return send_file(
             file,
-            attachment_filename='proovr.ics',
+            download_name='proovr.ics',
             as_attachment=True)
         file.close
     else:
