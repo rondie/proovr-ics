@@ -1,2 +1,2 @@
 # proovr-ics
-dynamically generate an ics link containing proovr (proxyclick) booked dates
+Dynamically generate an ics link containing proovr (proxyclick) booked dates
