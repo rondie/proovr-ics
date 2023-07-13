@@ -1,4 +1,4 @@
-FROM python:3.12.0b3-slim
+FROM python:3.12.0b4-slim
 ARG APPDIR="/home/app"
 ENV PATH="${APPDIR}/.local/bin:${PATH}"
 ENV PROOVR_ICS_UID=1000
