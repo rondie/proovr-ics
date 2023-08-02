@@ -1,5 +1,5 @@
 FROM python:3.12.0b4-slim
-ARG USERNAME="app"
+ARG USERNAME="application"
 ARG APPDIR="/home/${USERNAME}"
 ENV PATH="${APPDIR}/.local/bin:${PATH}"
 ENV PROOVR_ICS_UID=1000
