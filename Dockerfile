@@ -6,7 +6,6 @@ ENV PROOVR_ICS_UID=1000
 ENV PROOVR_ICS_GID=1000
 RUN groupadd --gid ${PROOVR_ICS_GID} ${USERNAME} \
     && useradd --uid ${PROOVR_ICS_UID} --gid ${PROOVR_ICS_GID} --shell /bin/false --create-home ${USERNAME}
-RUN mkdir ${APPDIR} && chown -R ${PROOVR_ICS_UID}:${PROOVR_ICS_GID} ${APPDIR}
 USER ${USERNAME}
 WORKDIR ${APPDIR}
 COPY --chown=${PROOVR_ICS_UID}:${PROOVR_ICS_GID} requirements.txt ${APPDIR}
