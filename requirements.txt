@@ -1,4 +1,4 @@
-Flask==2.3.2
+Flask==2.3.3
 ics==0.7.2
 requests==2.31.0
 urllib3==2.0.4
