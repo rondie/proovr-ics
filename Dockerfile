@@ -1,4 +1,4 @@
-FROM python:3.12.1-slim
+FROM python:3.12.2-slim
 ARG USERNAME="app"
 ARG APPDIR="/home/${USERNAME}"
 ENV PATH="${APPDIR}/.local/bin:${PATH}"
