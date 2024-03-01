@@ -1,6 +1,6 @@
 Flask==3.0.2
 ics==0.7.2
 requests==2.31.0
-urllib3==2.1.0
+urllib3==2.2.1
 uuid==1.30
 gunicorn==21.2.0
