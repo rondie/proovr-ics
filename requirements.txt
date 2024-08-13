@@ -3,4 +3,4 @@ ics==0.7.2
 requests==2.32.3
 urllib3==2.2.2
 uuid==1.30
-gunicorn==22.0.0
+gunicorn==23.0.0
