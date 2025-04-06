@@ -3,7 +3,7 @@ import urllib.parse
 import uuid
 from io import BytesIO
 
-from app.functions import getBookedData, mailConfCode, makeIcs, getJwt
+from app.functions import getBookedData, mailConfCode, makeIcs, getJwt, seatsavailable
 
 from flask import Flask, redirect, render_template, request, send_file
 
@@ -115,6 +115,21 @@ def ics(emailurl, emailCredential):
             download_name='proovr.ics',
             as_attachment=True)
         file.close
+    else:
+        return render_template(
+            "page.html",
+            email=email,
+            emailurl=emailurl,
+            error=error
+            ), 500
+
+@app.route('/<emailurl>/<emailCredential>/metrics')
+def metrics(emailurl, emailCredential):
+    email = urllib.parse.unquote(emailurl)
+    status_code, error, jwt = getJwt(emailCredential)
+    if status_code == 200:
+        seatsAvailable = seatsavailable(jwt)
+        return seatsAvailable
     else:
         return render_template(
             "page.html",

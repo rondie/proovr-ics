@@ -1,0 +1,20 @@
+services:
+  proovr-ics:
+    image: ghcr.io/rondie/proovr-ics:main
+    container_name: proovr-ics
+    networks:
+      - traefik_internal
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.proovr-ics.rule=Host(`proovr-ics.${DOMAIN}`)"
+      - "traefik.http.routers.proovr-ics.entrypoints=https"
+      - "traefik.http.routers.proovr-ics.tls.certresolver=mytlschallenge"
+      - "traefik.http.services.proovr-ics.loadbalancer.server.port=5000"
+      - "traefik.docker.network=traefik_internal"
+    healthcheck:
+      test: "curl --connect-timeout 15 --silent --show-error --fail http://127.0.0.1:5000 || exit 1"
+      interval: 1m00s
+      timeout: 15s
+      retries: 3
+      start_period: 1m00s
