@@ -8,7 +8,10 @@ from ics import Calendar, Event
 import requests
 
 
-site = 'https://registration.proxyclick.com'
+registrationsite = 'https://registration.proxyclick.com'
+apisite = 'https://api.proovr.com'
+proovrsite = 'https://proovr.proxyclick.com'
+website = 'https://web.proovr.com'
 bhid = "CO-DHD956"
 headers = {
         "Accept": "application/json, text/plain, */*",
@@ -20,7 +23,7 @@ def mailConfCode(email):
     state = uuid.uuid5(uuid.NAMESPACE_URL, email)
     data = {'Email': email, 'State': str(state)}
     requests.post(
-            'https://api.proovr.com/v0.1/credentials/email/request',
+            apisite + '/v0.1/credentials/email/request',
             json=data
             )
 
@@ -28,7 +31,7 @@ def mailConfCode(email):
 def getJwt(emailCredential):
     getJwtData = {"Credentials": {"Email": emailCredential}}
     getJwtPage = requests.post(
-        'https://proovr.proxyclick.com/employee/view-booking',
+        proovrsite + '/employee/view-booking',
         headers=headers,
         json=getJwtData
         )
@@ -44,11 +47,11 @@ def getJwt(emailCredential):
 def getBookedData(jwt):
     headers["Authorization"] = "Bearer " + jwt
     bookingPage = requests.get(
-        site + '/api/app/' + bhid + '/em/bookable-days',
+        registrationsite + '/api/app/' + bhid + '/em/bookable-days',
         headers=headers
         )
     bookingData = json.loads(bookingPage.text)
-    return(bookingData)
+    return (bookingData)
 
 
 def makeIcs(bookedData):
@@ -64,7 +67,21 @@ def makeIcs(bookedData):
         event.geo = \
             entry['booking']['company']['latitude'], \
             entry['booking']['company']['longitude']
-        event.url = 'https://web.proovr.com/'
+        event.url = website
         cal.events.add(event)
     cal_bytes = bytes(str(cal), 'utf-8')
     return cal_bytes
+
+
+def seatsavailable(jwt):
+    headers["Authorization"] = "Bearer " + jwt
+    seatsavailablePage = requests.get(
+        registrationsite + '/api/app/' + bhid + '/em/bookable-days',
+        headers=headers
+        )
+    seatsavailable = json.loads(seatsavailablePage.text)
+    seatsAvailable = [
+        {"date": entry["date"], "seatsAvailable": entry["seatsAvailable"]}
+        for entry in seatsavailable
+    ]
+    return (seatsAvailable)
