@@ -51,7 +51,7 @@ def getBookedData(jwt):
         headers=headers
         )
     bookingData = json.loads(bookingPage.text)
-    return(bookingData)
+    return (bookingData)
 
 
 def makeIcs(bookedData):
@@ -72,6 +72,7 @@ def makeIcs(bookedData):
     cal_bytes = bytes(str(cal), 'utf-8')
     return cal_bytes
 
+
 def seatsavailable(jwt):
     headers["Authorization"] = "Bearer " + jwt
     seatsavailablePage = requests.get(
@@ -79,5 +80,8 @@ def seatsavailable(jwt):
         headers=headers
         )
     seatsavailable = json.loads(seatsavailablePage.text)
-    seatsAvailable = [{"date": entry["date"], "seatsAvailable": entry["seatsAvailable"]} for entry in seatsavailable]
-    return(seatsAvailable)
+    seatsAvailable = [
+        {"date": entry["date"], "seatsAvailable": entry["seatsAvailable"]}
+        for entry in seatsavailable
+    ]
+    return (seatsAvailable)

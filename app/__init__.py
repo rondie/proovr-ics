@@ -3,7 +3,13 @@ import urllib.parse
 import uuid
 from io import BytesIO
 
-from app.functions import getBookedData, mailConfCode, makeIcs, getJwt, seatsavailable
+from app.functions import (
+    getBookedData,
+    mailConfCode,
+    makeIcs,
+    getJwt,
+    seatsavailable
+)
 
 from flask import Flask, redirect, render_template, request, send_file
 
@@ -122,6 +128,7 @@ def ics(emailurl, emailCredential):
             emailurl=emailurl,
             error=error
             ), 500
+
 
 @app.route('/<emailurl>/<emailCredential>/metrics')
 def metrics(emailurl, emailCredential):
