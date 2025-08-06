@@ -63,7 +63,7 @@ def makeIcs(bookedData):
         event.name = entry['booking']['company']['name']
         event.description = \
             "Lunch=" + str(entry['booking']['customFields'][0]['value'])
-        event.location = entry['booking']['deskArea']['name']
+        event.location = entry['booking']['deskArea']['name'] + ' - Desk ' + str(entry['booking']['deskArea']['deskNumber'])
         event.geo = \
             entry['booking']['company']['latitude'], \
             entry['booking']['company']['longitude']

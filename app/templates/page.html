@@ -32,7 +32,7 @@ Content in <a href="/{{emailurl}}/{{emailCredential}}/proovr.ics">ICS link</a> s
 	{{ entry['date'] }}<br>
 	{% if entry['booking'] %}
 		{{ entry['booking']['company']['name'] }}<br>
-		{{ entry['booking']['deskArea']['name'] }} ({{entry['booking']['deskArea']['deskCount']- entry['seatsAvailable']}} booked)<br>
+		{{ entry['booking']['deskArea']['name'] }} - Desk {{ entry['booking']['deskArea']['deskNumber'] }} ({{entry['booking']['deskArea']['deskCount']- entry['seatsAvailable']}} booked)<br>
 	{% endif %}
 	</blockquote>
         {% endfor %}
