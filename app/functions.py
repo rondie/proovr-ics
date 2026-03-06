@@ -2,7 +2,8 @@ import json
 import re
 import uuid
 
-from ics import Calendar, Event
+from datetime import date
+from icalendar import Calendar, Event
 
 
 import requests
@@ -56,23 +57,23 @@ def getBookedData(jwt):
 
 def makeIcs(bookedData):
     cal = Calendar()
+    cal.add('prodid', '-//proovr-ics//EN')
+    cal.add('version', '2.0')
     for entry in bookedData:
         event = Event()
-        event.begin = entry['date']
-        event.make_all_day()
-        event.name = entry['booking']['company']['name']
-        event.description = \
-            "Lunch=" + str(entry['booking']['customFields'][0]['value'])
-        event.location = (entry['booking']['deskArea']['name'] +
-                          ' - Desk ' +
-                          str(entry['booking']['deskArea']['deskNumber']))
-        event.geo = \
-            entry['booking']['company']['latitude'], \
-            entry['booking']['company']['longitude']
-        event.url = website
-        cal.events.add(event)
-    cal_bytes = bytes(str(cal), 'utf-8')
-    return cal_bytes
+        event.add('dtstart', date.fromisoformat(entry['date']))
+        event.add('summary', entry['booking']['company']['name'])
+        event.add('description',
+                  "Lunch=" + str(entry['booking']['customFields'][0]['value']))
+        event.add('location',
+                  entry['booking']['deskArea']['name'] +
+                  ' - Desk ' +
+                  str(entry['booking']['deskArea']['deskNumber']))
+        event.add('geo', (entry['booking']['company']['latitude'],
+                          entry['booking']['company']['longitude']))
+        event.add('url', website)
+        cal.add_component(event)
+    return cal.to_ical()
 
 
 def seatsavailable(jwt):
