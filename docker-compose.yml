@@ -12,9 +12,3 @@ services:
       - "traefik.http.routers.proovr-ics.tls.certresolver=mytlschallenge"
       - "traefik.http.services.proovr-ics.loadbalancer.server.port=5000"
       - "traefik.docker.network=traefik_internal"
-    healthcheck:
-      test: "curl --connect-timeout 15 --silent --show-error --fail http://127.0.0.1:5000 || exit 1"
-      interval: 1m00s
-      timeout: 15s
-      retries: 3
-      start_period: 1m00s
