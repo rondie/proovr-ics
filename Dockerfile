@@ -5,7 +5,7 @@ ENV PROOVR_ICS_UID=1000
 ENV PROOVR_ICS_GID=1000
 RUN groupadd --gid ${PROOVR_ICS_GID} app \
     && useradd --uid ${PROOVR_ICS_UID} --gid ${PROOVR_ICS_GID} --shell /bin/false --create-home app
-USER ${PROOVR_ICS_UID}
+USER 1000
 WORKDIR ${APPDIR}
 COPY --chown=${PROOVR_ICS_UID}:${PROOVR_ICS_GID} requirements.txt ${APPDIR}
 RUN pip3 install --no-cache-dir -r requirements.txt
