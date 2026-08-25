@@ -1,11 +1,12 @@
-FROM python:3-bookworm
+FROM python:3.12-alpine
 ARG APPDIR="/home/app"
 ENV PATH="${APPDIR}/.local/bin:${PATH}"
 ENV UID=10001
 ENV GID=10001
-RUN groupadd --gid ${GID} app \
-    && useradd --uid ${UID} --gid ${GID} --shell /bin/false --create-home app
-USER 10001
+RUN addgroup -g ${GID} app && \
+    adduser -D -u ${UID} -G app -s /bin/false -h ${APPDIR} app
+RUN apk add --no-cache curl
+USER ${UID}
 WORKDIR ${APPDIR}
 COPY --chown=${UID}:${GID} requirements.txt ${APPDIR}
 RUN pip3 install --no-cache-dir -r requirements.txt
