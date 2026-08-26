@@ -1,4 +1,4 @@
-FROM python:3.12-alpine
+FROM python:3.14-alpine
 ARG APPDIR="/home/app"
 ENV PATH="${APPDIR}/.local/bin:${PATH}"
 ENV UID=10001
