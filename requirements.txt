@@ -3,4 +3,4 @@ icalendar
 requests==2.34.2
 urllib3==2.7.0
 uuid==1.30
-gunicorn==26.1.0
+gunicorn==26.2.0
