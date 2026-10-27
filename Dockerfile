@@ -5,7 +5,7 @@ ENV UID=10001
 ENV GID=10001
 RUN addgroup -g ${GID} app && \
     adduser -D -u ${UID} -G app -s /bin/false -h ${APPDIR} app
-RUN apk add --no-cache curl=8.21.0-r0
+RUN apk add --no-cache curl=8.23.0-r0
 USER 10001
 WORKDIR ${APPDIR}
 COPY --chown=${UID}:${GID} requirements.txt ${APPDIR}
